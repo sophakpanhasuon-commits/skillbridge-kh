@@ -1,5 +1,7 @@
+import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { env } from "../env";
+import * as schema from "./schema";
 
 /**
  * One shared connection pool for the whole process. Opening a new Postgres
@@ -20,3 +22,6 @@ export const pool = new Pool({
 pool.on("error", (err) => {
   console.error("Unexpected PostgreSQL pool error:", err.message);
 });
+
+/** Typed query builder on top of the same pool. Use this for application queries. */
+export const db = drizzle(pool, { schema });
